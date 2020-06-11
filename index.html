@@ -1,0 +1,137 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta name="description" content="This is my calculator project for freecodecamp curriculum">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="./css/Style.css">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <title>Calculator Project</title>
+    <script>
+        // Javascript
+        $(document).ready(function () {
+            let state = {
+                display: [''],
+                result: 0
+            }
+
+            // Clear all 
+            let clearAll = () => {
+                state.display = [''];
+                result = 0;
+                let newDisplay = '0';
+                return newDisplay;
+            }
+
+            // Check if the number contaisn two or more decimals 
+            let invalidInput = (input) => {
+                let regexOperators = /[\+\*\\/\-]/
+                let nums = input.split(regexOperators);
+                let invalidNumbers = nums.filter(item => (/\.{1,2}\d+\.|\d+\.{2}/).test(item));
+                return (invalidNumbers.length > 0);
+            }
+
+            let modifyLastOperator = () => {
+                let regexOperators = /[\+\*\\/\-]/;
+                let lastChar       = state.display[state.display.length - 1]; // Last character 
+                let secondLastChar = state.display[state.display.length - 2]; // Second last character 
+                if (regexOperators.test(lastChar) && regexOperators.test(secondLastChar)) {
+
+                    if (secondLastChar === "-") {
+                        let delElem = state.display.pop();
+                        state.display.pop();
+                        state.display.pop();
+                        state.display = [...state.display, delElem];
+                    }
+
+                    else if (lastChar !== "-") {
+                        let delElem = state.display.pop();
+                        state.display.pop();
+                        state.display = [...state.display, delElem];
+                    }
+                   
+                }
+
+            }
+
+
+            // Add number to display 
+            let addNumberToDisplay = (input) => {
+                let regexZeros = /^0{2}/  // This regex deals with zeros in front of the string 
+                state.display = [...state.display, input];
+                modifyLastOperator();
+                let newDisplay = state.display.join("");
+                if (regexZeros.test(newDisplay)) {
+                    state.display = [''];
+                    return '0';
+                }
+
+                else if (invalidInput(newDisplay)) {
+                    state.display.pop();
+                    return state.display.join("");
+
+                }
+
+                
+
+                else {
+                    return newDisplay;
+                }
+            }
+
+            let calculateResult = () => {
+                state.result = eval(state.display.join("")); 
+                state.display = [].concat(state.result + "");
+                return state.result;
+            }
+
+         
+
+            $("button").click(function () {
+                let type = $(this).text();
+                switch (type) {
+                    case "AC":
+                        $("#display-p").text(clearAll());
+                        break;
+                    case "=":
+                        $("#display-p").text(calculateResult());
+                        break;
+                    default:
+                        $("#display-p").text(addNumberToDisplay(type));
+                }
+            })
+        });
+    </script>
+
+</head>
+<body>
+    <script src="https://cdn.freecodecamp.org/testable-projects-fcc/v1/bundle.js"></script>
+    <div class="container">
+        <div id="display">
+            <h1 id="display-p">0</h1>
+        </div>
+        <button type="button" class="btn btn-danger" id="clear">AC</button>
+        <button type="button" class="btn btn-default" id="delete" style="background-color: grey; color: white;">del</button>
+        <button type="button" class="btn btn-default" id="add" style="background-color: grey; color: white;">+</button>
+        <button type="button" class="btn btn-default" id="one"style="background-color: lightgrey; color: white;">1</button>
+        <button type="button" class="btn btn-default" id="two" style="background-color: lightgrey; color: white;">2</button>
+        <button type="button" class="btn btn-default" id="three" style="background-color: lightgrey; color: white;">3</button>
+        <button type="button" class="btn btn-default" id="subtract" style="background-color: grey; color: white;">-</button>
+        <button type="button" class="btn btn-default" id="four" style="background-color: lightgrey; color: white;">4</button>
+        <button type="button" class="btn btn-default" id="five" style="background-color: lightgrey; color: white;">5</button>
+        <button type="button" class="btn btn-default" id="six" style="background-color: lightgrey; color: white;">6</button>
+        <button type="button" class="btn btn-default" id="divide" style="background-color: grey; color: white;">/</button>
+        <button type="button" class="btn btn-default" id="seven" style="background-color: lightgrey; color: white;">7</button>
+        <button type="button" class="btn btn-default" id="eight" style="background-color: lightgrey; color: white;">8</button>
+        <button type="button" class="btn btn-default" id="nine" style="background-color: lightgrey; color: white;">9</button>
+        <button type="button" class="btn btn-default" id="multiply" style="background-color: grey; color: white;">*</button>
+        <button type="button" class="btn btn-default" id="zero" style="background-color: lightgrey; color: white;">0</button>
+        <button type="button" class="btn btn-default" id="decimal" style="background-color: grey; color: white;">.</button>
+        <button type="button" class="btn btn-default" id="equals" style="background-color: grey; color: white;">=</button>
+    </div>
+</body>
+</html>
